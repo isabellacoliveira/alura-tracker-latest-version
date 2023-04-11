@@ -3,7 +3,7 @@ import IProjeto from "@/interfaces/IProjeto";
 import { InjectionKey } from "@vue/runtime-core";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import { ADICIONA_PROJETO, ALTERAR_PROJETO, DEFINIR_PROJETOS, EXCLUIR_PROJETO, NOTIFICAR } from "./tipoMutacoes";
-import { OBTER_PROJETOS } from "./tipoAcoes";
+import { ALTERA_PROJETO, CADASTRAR_PROJETO, OBTER_PROJETOS, REMOVER_PROJETO } from "./tipoAcoes";
 import http from "@/http";
 
 interface Estado {
@@ -53,6 +53,20 @@ export const store = createStore<Estado>({
         [OBTER_PROJETOS] ({ commit }) {
             http.get('projetos')
             .then(resposta => commit(DEFINIR_PROJETOS, resposta.data)); 
+        },
+        [CADASTRAR_PROJETO] (contexto, nomeDoProjeto: string) {
+            return http.post('/projetos', {
+                nome: nomeDoProjeto
+            })
+        },
+        [ALTERA_PROJETO] (contexto, projeto: IProjeto) {
+            return http.put(`/projetos/${projeto.id}`, projeto)
+        },
+        [REMOVER_PROJETO] ({ commit }, id: string) {
+            // vamos fazer o commit de uma mutation
+            return http.delete(`/projetos/${id}`)
+            // ao remover na api ela retorna o estado local 
+            .then(() => commit(EXCLUIR_PROJETO, id))
         }
     }
 })

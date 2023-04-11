@@ -21,8 +21,9 @@
 import { useStore } from "@/store";
 import { defineComponent } from "vue";
 import { TipoNotificacao } from "@/interfaces/INotificacao";
-import { ADICIONA_PROJETO, ALTERAR_PROJETO } from "@/store/tipoMutacoes";
+import { ALTERAR_PROJETO } from "@/store/tipoMutacoes";
 import useNotificador from '@/hooks/notificador'; 
+import { ALTERA_PROJETO, CADASTRAR_PROJETO } from "@/store/tipoAcoes";
 
 export default defineComponent({
   name: "Formulario",
@@ -45,13 +46,21 @@ export default defineComponent({
   methods: {
     salvar() {
       if (this.id) {
-        this.store.commit(ALTERAR_PROJETO, {
+        this.store.dispatch(ALTERA_PROJETO, {
           id: this.id,
           nome: this.nomeDoProjeto
+        }).then(() => {
+          this.lidarComSucesso();
         })
       } else {
-        this.store.commit(ADICIONA_PROJETO, this.nomeDoProjeto)
+        // não é mais dispatch mas sim commit 
+        this.store.dispatch(CADASTRAR_PROJETO, this.nomeDoProjeto)
+        .then(() => {
+          this.lidarComSucesso();
+        })
       }
+    }, 
+    lidarComSucesso(){
       this.nomeDoProjeto = "";
       this.notificar(TipoNotificacao.SUCESSO, 'Excelente', 'O projeto foi cadastrado com sucesso')
       this.$router.push('/projetos')
