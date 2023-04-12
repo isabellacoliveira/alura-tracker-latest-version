@@ -2,8 +2,8 @@ import { INotificacao } from "@/interfaces/INotificacao";
 import IProjeto from "@/interfaces/IProjeto";
 import { InjectionKey } from "@vue/runtime-core";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { ADICIONA_PROJETO, ALTERAR_PROJETO, DEFINIR_PROJETOS, DEFINIR_TAREFAS, EXCLUIR_PROJETO, NOTIFICAR } from "./tipoMutacoes";
-import { ALTERA_PROJETO, CADASTRAR_PROJETO, OBTER_PROJETOS, OBTER_TAREFAS, REMOVER_PROJETO } from "./tipoAcoes";
+import { ADICIONA_PROJETO, ADICIONA_TAREFA, ALTERAR_PROJETO, DEFINIR_PROJETOS, DEFINIR_TAREFAS, EXCLUIR_PROJETO, NOTIFICAR } from "./tipoMutacoes";
+import { ALTERA_PROJETO, CADASTRAR_PROJETO, CADASTRAR_TAREFA, OBTER_PROJETOS, OBTER_TAREFAS, REMOVER_PROJETO } from "./tipoAcoes";
 import http from "@/http";
 import ITarefa from "@/interfaces/ITarefa";
 
@@ -44,6 +44,9 @@ export const store = createStore<Estado>({
         [DEFINIR_TAREFAS](state, tarefas: ITarefa[]){
             state.tarefas = tarefas
         }, 
+        [ADICIONA_TAREFA](state, tarefa: ITarefa){
+            state.tarefas.push(tarefa)
+        }, 
         [NOTIFICAR] (state, novaNotificacao: INotificacao) {
 
             novaNotificacao.id = new Date().getTime()
@@ -78,6 +81,13 @@ export const store = createStore<Estado>({
             http.get('tarefas')
             .then(resposta => commit(DEFINIR_TAREFAS, resposta.data)); 
         },
+        [CADASTRAR_TAREFA] ({ commit }, tarefa: ITarefa) {
+            return http.post('/tarefas', tarefa)
+            // para nao precisarmos ficar recarregando o estado, vamos pegar a tarefa e adicionar
+            // em nosso estado 
+            // ao cadastrar a tarefa o back devolve um objeto com as tarefas que acabamos de cadastrar        
+            .then(resposta => commit(ADICIONA_TAREFA, resposta.data))
+        }
     }
 })
 
