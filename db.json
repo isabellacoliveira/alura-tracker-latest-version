@@ -8,5 +8,45 @@
       "nome": "testeoasjdlkasd",
       "id": 2
     }
+  ], 
+  "tarefas": [
+    {
+      "id": 1,
+      "duracaoEmSegundos": 123, 
+      "descricao": "teste de requisição OI ", 
+      "projeto":  {
+      "id": 1,
+      "nome":  "testeoasjdlkasd"
+    } 
+    },
+    {
+      "id": 2,
+      "duracaoEmSegundos": 140, 
+      "descricao": "teste de requisição OI ", 
+      "projeto":  {
+      "id": 1,
+      "nome":  "testeoasjdlkasd"
+      
+    } 
+    },
+    {
+      "id": 3,
+      "duracaoEmSegundos": 200, 
+      "descricao": "teste de requisição OI ", 
+      "projeto":  {
+      "id": 1,
+      "nome": "testeoasjdlkasd"
+    } 
+    },
+    {
+      "id": 4,
+      "duracaoEmSegundos": 400, 
+      "descricao": "teste de requisição OI ", 
+      "projeto":  {
+      "id": 1,
+      "nome": "testeoasjdlkasd"
+      
+    } 
+    }
   ]
 }
