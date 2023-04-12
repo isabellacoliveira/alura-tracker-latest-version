@@ -1,23 +1,32 @@
 <template>
         <Formulario @aoSalvarTarefa="salvarTarefa"/>
         <div class="lista">
-          <Tarefa v-for="(tarefa, index) in tarefas" :key="index" :tarefa="tarefa"/>
+          <Tarefa v-for="(tarefa, index) in tarefas" :key="index" :tarefa="tarefa" @aoTarefaClicada="selecionarTarefa"/>
           <Box v-if="listaEstaVazia">
             Você não está muito produtivo hoje :(
           </Box>
-          <div class="modal is-active">
+          <!-- so vai existir se a tarefa selecionada for verdadeira = v-if -->
+          <div class="modal" :class="{'is-active' : tarefaSelecionada}" v-if="tarefaSelecionada">
             <div class="modal-background"></div>
             <div class="modal-card">
               <header class="modal-card-head">
-                <p class="modal-card-title">Modal title</p>
-                <button class="delete" aria-label="close"></button>
+                <p class="modal-card-title">Editando uma tarefa</p>
+                <button class="delete" aria-label="close" @click="fecharModal"></button>
               </header>
               <section class="modal-card-body">
-                <!-- Content ... -->
+                  <div class="field">
+                  <label for="descricaoDaTarefa" class="label"> Descrição da Tarefa </label>
+                  <input
+                    type="text"
+                    class="input"
+                    v-model="tarefaSelecionada.descricao"
+                    id="descricaoDaTarefa"
+                  />
+                </div>
               </section>
               <footer class="modal-card-foot">
-                <button class="button is-success">Save changes</button>
-                <button class="button">Cancel</button>
+                <button class="button is-success">Salvar alterações</button>
+                <button class="button" @click="fecharModal">Cancelar</button>
               </footer>
             </div>
           </div>
@@ -42,6 +51,11 @@ import { OBTER_PROJETOS } from '@/store/tipoAcoes';
       Tarefa,
       Box
     },
+    data() {
+      return {
+        tarefaSelecionada: null as ITarefa | null
+      }
+    }, 
     computed: {
       listaEstaVazia () : boolean {
         return this.tarefas.length === 0
@@ -50,6 +64,12 @@ import { OBTER_PROJETOS } from '@/store/tipoAcoes';
     methods: {
       salvarTarefa (tarefa: ITarefa) {
         this.store.dispatch(CADASTRAR_TAREFA, tarefa)
+      }, 
+      selecionarTarefa(tarefa: ITarefa){
+        this.tarefaSelecionada = tarefa
+      }, 
+      fecharModal(){
+        this.tarefaSelecionada = null
       }
     },
     setup() {
