@@ -54,6 +54,11 @@
         "id": 2
       },
       "id": 5
+    },
+    {
+      "duracaoEmSegundos": 1,
+      "descricao": "",
+      "id": 6
     }
   ]
 }

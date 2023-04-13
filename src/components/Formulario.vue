@@ -72,7 +72,7 @@ export default defineComponent({
       // vamos trazer a lista de projetos que esta encapsulada 
       // como a lista é dinamica precisamos encaixa-la no computed 
       // pois assim ela vai ser atualizada e não só trazida pra cá 
-      projetos: computed(() => store.state.projetos)
+      projetos: computed(() => store.state.projeto.projetos)
     }
   }
 });
