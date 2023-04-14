@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="column">
-        <Temporizador @aoTemporizadorFinalizado="finalizarTarefa"/>
+        <Temporizador @aoTemporizadorFinalizado="salvarTarefa"/>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { key } from "@/store";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import Temporizador from './Temporizador.vue'
 
@@ -46,33 +46,27 @@ export default defineComponent({
   components: {
     Temporizador
   },
-  data () {
-    return {
-      descricao: '', 
-      idProjeto: ''
-    }
-  },
-  methods: {
-    finalizarTarefa (tempoDecorrido: number) : void {
-      this.$emit('aoSalvarTarefa', {
-        duracaoEmSegundos: tempoDecorrido,
-        descricao: this.descricao,
-        // this (este componentes), projetos (o que fizemos no setup), 
-        // para cada projeto queremos o id cujo o mesmo é igual ao id do projeto
-        projeto: this.projetos.find(proj => proj.id == this.idProjeto)
-      })
-      this.descricao = ''
-    }
-  }, 
-  // precisamos importar um hook chamado use Store 
-  // precisamos importar a chave de acesso 
-  setup(){
+  // estamos emitindo o evento 
+  setup(props, {emit}){
     const store = useStore(key)
+    const descricao = ref("")
+    const idProjeto = ref("")
+
+    const projetos = computed(() => store.state.projeto.projetos)
+
+    const salvarTarefa = (tempoEmSegundos: number) : void => {
+      emit('aoSalvarTarefa', {
+        duracaoEmSegundos: tempoEmSegundos,
+        descricao: descricao.value,
+        projeto: projetos.value.find(proj => proj.id == idProjeto.value)
+      })
+      descricao.value = ''
+    }
     return {
-      // vamos trazer a lista de projetos que esta encapsulada 
-      // como a lista é dinamica precisamos encaixa-la no computed 
-      // pois assim ela vai ser atualizada e não só trazida pra cá 
-      projetos: computed(() => store.state.projeto.projetos)
+      descricao,
+      idProjeto,
+      projetos,
+      salvarTarefa
     }
   }
 });
